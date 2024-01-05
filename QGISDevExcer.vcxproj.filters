@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src-main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src-main\styleMng">
+      <UniqueIdentifier>{8f768b01-eb33-40a6-9ebe-497c20792288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-main\LayerMng">
+      <UniqueIdentifier>{7b25a72b-a3ea-4363-880d-2d8d7a4e1791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-main\MapTool">
+      <UniqueIdentifier>{9fee769d-c4da-44a2-affb-9f25820929fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src-main\MenuProvider">
+      <UniqueIdentifier>{c9cce475-2984-448c-8e9d-cb584c32aa1f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="bookmark.ui">
+      <Filter>src-main</Filter>
+    </QtUic>
+    <QtUic Include="dataviewer.ui">
+      <Filter>src-main</Filter>
+    </QtUic>
+    <QtUic Include="S3dmApplySymbolDlg.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="S3dmSymbolExportDlg.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="S3dmSymbolImportDlg.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="S3dmSymbolManager.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="S3dmSymbolSaveDlg.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="S3dmXmlGenerateDlg.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="Project.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+    <QtUic Include="Widget.ui">
+      <Filter>src-main\styleMng</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BookmarkDialog.cpp">
+      <Filter>src-main</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src-main</Filter>
+    </ClCompile>
+    <ClCompile Include="dataviewer.cpp">
+      <Filter>src-main</Filter>
+    </ClCompile>
+    <ClCompile Include="qgsutility.cpp">
+      <Filter>src-main</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmApplySymbolDlg.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmStyleManager.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmSymbolExportDlg.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmSymbolImportDlg.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmSymbolManager.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmSymbolSaveDlg.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="S3dmXmlGenerateDlg.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectDialog.cpp">
+      <Filter>src-main\styleMng</Filter>
+    </ClCompile>
+    <ClCompile Include="QgsMapToolPolygon.cpp">
+      <Filter>src-main\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="MeasureTool.cpp">
+      <Filter>src-main\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="qgsmaptooldrawline.cpp">
+      <Filter>src-main\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="MapToolSelect.cpp">
+      <Filter>src-main\MapTool</Filter>
+    </ClCompile>
+    <ClCompile Include="LayerTreeViewMenuProvider.cpp">
+      <Filter>src-main\MenuProvider</Filter>
+    </ClCompile>
+    <ClCompile Include="QgsMapToolSelect.cpp">
+      <Filter>src-main\MapTool</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="BookmarkDialog.h">
+      <Filter>src-main</Filter>
+    </QtMoc>
+    <QtMoc Include="dataviewer.h">
+      <Filter>src-main</Filter>
+    </QtMoc>
+    <QtMoc Include="S3dmApplySymbolDlg.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="S3dmSymbolExportDlg.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="S3dmSymbolImportDlg.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="S3dmSymbolManager.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="S3dmSymbolSaveDlg.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="S3dmXmlGenerateDlg.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="ProjectDialog.h">
+      <Filter>src-main\styleMng</Filter>
+    </QtMoc>
+    <QtMoc Include="QgsMapToolPolygon.h">
+      <Filter>src-main\MapTool</Filter>
+    </QtMoc>
+    <QtMoc Include="MeasureTool.h">
+      <Filter>src-main\MapTool</Filter>
+    </QtMoc>
+    <QtMoc Include="MapToolSelect.h">
+      <Filter>src-main\MapTool</Filter>
+    </QtMoc>
+    <QtMoc Include="LayerTreeViewMenuProvider.h">
+      <Filter>src-main\MenuProvider</Filter>
+    </QtMoc>
+    <QtMoc Include="QgsMapToolSelect.h">
+      <Filter>src-main\MapTool</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="DataViewer.ico">
+      <Filter>src-main</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="dataviewer.qrc">
+      <Filter>src-main</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DataViewer.rc">
+      <Filter>src-main</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="qgsutility.h">
+      <Filter>src-main</Filter>
+    </ClInclude>
+    <ClInclude Include="s3d_stylemanagerlib_global.h">
+      <Filter>src-main\styleMng</Filter>
+    </ClInclude>
+    <ClInclude Include="S3dmStyleManager.h">
+      <Filter>src-main\styleMng</Filter>
+    </ClInclude>
+    <ClInclude Include="qgsmaptooldrawline.h">
+      <Filter>src-main\MapTool</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+</Project>
