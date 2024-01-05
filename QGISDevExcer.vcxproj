@@ -13,14 +13,12 @@
     <QtUic Include="dataviewer.ui">
       <FileType>Document</FileType>
     </QtUic>
-    <QtUic Include="Project.ui" />
     <QtUic Include="S3dmApplySymbolDlg.ui" />
     <QtUic Include="S3dmSymbolExportDlg.ui" />
     <QtUic Include="S3dmSymbolImportDlg.ui" />
     <QtUic Include="S3dmSymbolManager.ui" />
     <QtUic Include="S3dmSymbolSaveDlg.ui" />
     <QtUic Include="S3dmXmlGenerateDlg.ui" />
-    <QtUic Include="Widget.ui" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BookmarkDialog.cpp">
@@ -32,7 +30,6 @@
     <ClCompile Include="MeasureTool.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="ProjectDialog.cpp" />
     <ClCompile Include="qgsmaptooldrawline.cpp" />
     <ClCompile Include="QgsMapToolPolygon.cpp" />
     <ClCompile Include="qgsutility.cpp" />
@@ -78,7 +75,6 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="ProjectDialog.h" />
     <QtMoc Include="LayerTreeViewMenuProvider.h" />
     <QtMoc Include="MapToolSelect.h" />
     <ClInclude Include="qgsmaptooldrawline.h" />
