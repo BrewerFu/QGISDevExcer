@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+/x64/Release
+/.vs/QGISDevExcer
+/gdal_data
+/dataviewer.qrc.bak
+/dataviewer.ui.bak
+/MeasureTool.h.bak
+/QGISDevExcer.vcxproj.user
+/test.cpp
+/test.h
