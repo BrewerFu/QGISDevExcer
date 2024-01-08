@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1028</width>
+    <width>1020</width>
     <height>646</height>
    </rect>
   </property>
@@ -19,13 +19,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1028</width>
+     <width>1020</width>
      <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>工程</string>
     </property>
     <addaction name="actionNewProject"/>
     <addaction name="actionOpenProject"/>
@@ -87,7 +87,40 @@
     </property>
     <addaction name="actionCoordTrans"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>编辑</string>
+    </property>
+    <widget class="QMenu" name="menu">
+     <property name="title">
+      <string>编辑几何图形</string>
+     </property>
+     <addaction name="actionMoveFeatures"/>
+     <addaction name="actionCopyAndMoveFeatures"/>
+     <addaction name="actionRotateFeatures"/>
+     <addaction name="actionScaleFeatures"/>
+     <addaction name="actionSimplifyingFeatures"/>
+     <addaction name="actionAddRings"/>
+     <addaction name="actionAddParts"/>
+     <addaction name="actionFillRings"/>
+     <addaction name="actionDeleteRings"/>
+     <addaction name="actionDeleteParts"/>
+     <addaction name="actionReshapeFeatures"/>
+     <addaction name="actionOffsetCurves"/>
+     <addaction name="actionSplitFeatures"/>
+     <addaction name="actionSplitParts"/>
+     <addaction name="actionMergeSelectedFeatures"/>
+     <addaction name="actionVertexTool"/>
+     <addaction name="actionReverseLine"/>
+     <addaction name="actionCropOrExpandFeatures"/>
+    </widget>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="menu"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuData"/>
    <addaction name="menuView"/>
    <addaction name="menuBookMark"/>
@@ -480,7 +513,7 @@
   <action name="actionActivateMode">
    <property name="icon">
     <iconset resource="dataviewer.qrc">
-     <normaloff>:/Resources/编辑.svg</normaloff>:/Resources/编辑.svg</iconset>
+     <normaloff>:/Resources/编辑.png</normaloff>:/Resources/编辑.png</iconset>
    </property>
    <property name="text">
     <string>编辑模式</string>
@@ -492,13 +525,121 @@
   <action name="actionSelectGeometry">
    <property name="icon">
     <iconset resource="dataviewer.qrc">
-     <normaloff>:/Resources/选择.svg</normaloff>:/Resources/选择.svg</iconset>
+     <normaloff>:/Resources/框选.png</normaloff>:/Resources/框选.png</iconset>
    </property>
    <property name="text">
     <string>选择要素</string>
    </property>
    <property name="toolTip">
     <string>选择几何要素</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="dataviewer.qrc">
+     <normaloff>:/Resources/撤销.png</normaloff>:/Resources/撤销.png</iconset>
+   </property>
+   <property name="text">
+    <string>撤销</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="dataviewer.qrc">
+     <normaloff>:/Resources/重做.png</normaloff>:/Resources/重做.png</iconset>
+   </property>
+   <property name="text">
+    <string>重做</string>
+   </property>
+  </action>
+  <action name="actionMoveFeatures">
+   <property name="text">
+    <string>移动要素</string>
+   </property>
+  </action>
+  <action name="actionCopyAndMoveFeatures">
+   <property name="text">
+    <string>复制并移动要素</string>
+   </property>
+  </action>
+  <action name="actionRotateFeatures">
+   <property name="text">
+    <string>旋转要素</string>
+   </property>
+  </action>
+  <action name="actionScaleFeatures">
+   <property name="text">
+    <string>缩放要素</string>
+   </property>
+  </action>
+  <action name="actionSimplifyingFeatures">
+   <property name="text">
+    <string>简化要素</string>
+   </property>
+  </action>
+  <action name="actionAddRings">
+   <property name="text">
+    <string>添加环</string>
+   </property>
+  </action>
+  <action name="actionAddParts">
+   <property name="text">
+    <string>添加部件</string>
+   </property>
+  </action>
+  <action name="actionFillRings">
+   <property name="text">
+    <string>填充环</string>
+   </property>
+  </action>
+  <action name="actionDeleteRings">
+   <property name="text">
+    <string>删除环</string>
+   </property>
+  </action>
+  <action name="actionDeleteParts">
+   <property name="text">
+    <string>删除部件</string>
+   </property>
+  </action>
+  <action name="actionReshapeFeatures">
+   <property name="text">
+    <string>重塑要素</string>
+   </property>
+  </action>
+  <action name="actionOffsetCurves">
+   <property name="text">
+    <string>偏移曲线</string>
+   </property>
+  </action>
+  <action name="actionSplitFeatures">
+   <property name="text">
+    <string>分割要素</string>
+   </property>
+  </action>
+  <action name="actionSplitParts">
+   <property name="text">
+    <string>分割部件</string>
+   </property>
+  </action>
+  <action name="actionMergeSelectedFeatures">
+   <property name="text">
+    <string>合并所选要素</string>
+   </property>
+  </action>
+  <action name="actionVertexTool">
+   <property name="text">
+    <string>顶点工具（所有图层）</string>
+   </property>
+  </action>
+  <action name="actionReverseLine">
+   <property name="text">
+    <string>反转线</string>
+   </property>
+  </action>
+  <action name="actionCropOrExpandFeatures">
+   <property name="text">
+    <string>裁剪/扩展要素</string>
    </property>
   </action>
  </widget>
