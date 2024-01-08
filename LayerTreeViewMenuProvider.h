@@ -49,6 +49,8 @@ public slots:
 	void openProjectVectorDlg();	// 打开矢量投影转换窗口
 	void openProjectRasterDlg();	// 打开栅格投影转换窗口
 
+	void applyLayeredColoring();  //应用栅格样式和渲染器
+	void saveAsLayerStyle();	// 另存为图层样式文件
 protected:
 	QAction* m_SymbolizeAction = nullptr;
 	QAction* m_AttributeTableAction = nullptr;
@@ -58,6 +60,9 @@ protected:
 	QAction* m_SaveAsFileRaster = nullptr;
 	QAction* m_Projectvector = nullptr;
 	QAction* m_ProjectRaster = nullptr;
+	QAction* m_LayeredColoring = nullptr; //新增栅格图层分层赋色
+	QMenu* m_menu = nullptr; //创建子菜单
+	QAction* m_LayerStyle = nullptr; //新增另存为QGIS图层样式文件
 	QgsLayerTreeView* m_view;
 	QgsMapCanvas* m_canvas;
 };

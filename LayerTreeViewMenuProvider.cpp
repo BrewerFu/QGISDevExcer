@@ -1,5 +1,9 @@
 #include "LayerTreeViewMenuProvider.h"
-
+#include <QgsRasterShader.h>
+#include <QgsSingleBandPseudoColorRenderer.h>
+#include <QgsRasterRendererWidget.h>
+#include <QgsGui.h>
+#include <QgsSingleBandPseudoColorRendererWidget.h>
 DataViewerLayerTreeViewMenuProvider::DataViewerLayerTreeViewMenuProvider(QgsLayerTreeView* view, QgsMapCanvas* canvas)
 	: m_view(view)
 	, m_canvas(canvas)
@@ -52,7 +56,9 @@ QMenu* DataViewerLayerTreeViewMenuProvider::createContextMenu()
 			{
 				//添加另存为命令
 				m_SaveAsFileVecor->setData(QVariant::fromValue(layer));
-				menu->addAction(m_SaveAsFileVecor);
+				m_menu->addAction(m_SaveAsFileVecor); //给子菜单添加命令——要素另存为
+				m_menu->addAction(m_LayerStyle); //给子菜单添加命令——另存为QGIS图层样式文件
+				menu->addMenu(m_menu);
 
 				m_SymbolizeAction->setData(QVariant::fromValue(layer)); // 设置图层数据
 				//添加符号化命令
@@ -86,6 +92,11 @@ QMenu* DataViewerLayerTreeViewMenuProvider::createContextMenu()
 				m_ProjectRaster->setData(QVariant::fromValue(layer));		//设置图层数据
 				//添加启用投影命令
 				menu->addAction(m_ProjectRaster);
+
+				//从这里添加栅格图层分层赋色
+				m_LayeredColoring->setData(QVariant::fromValue(layer));   //设置栅格图层数据
+				//添加栅格图层分层赋色命令
+				menu->addAction(m_LayeredColoring);
 			}
 		}
 	}
@@ -99,18 +110,24 @@ void DataViewerLayerTreeViewMenuProvider::initProvider()
 	m_AttributeTableAction = new QAction(QStringLiteral("打开属性表"));
 	m_AttributeFieldAction = new QAction(QStringLiteral("打开属性字段"));
 	m_SetCurrentLayer = new QAction(QStringLiteral("启用或禁用编辑"));
-	m_SaveAsFileVecor = new QAction(QStringLiteral("另存为"));
+	m_SaveAsFileVecor = new QAction(QStringLiteral("要素另存为"));
 	m_SaveAsFileRaster = new QAction(QStringLiteral("另存为"));
 	m_Projectvector = new QAction(QStringLiteral("投影变换"));
 	m_ProjectRaster = new QAction(QStringLiteral("投影变换"));
+	m_LayeredColoring = new QAction(QStringLiteral("栅格分层赋色"));
+	m_menu = new QMenu(QStringLiteral("导出")); //子菜单
+	m_LayerStyle = new QAction(QStringLiteral("另存为QGIS图层样式文件"));
+	
 	connect(m_SymbolizeAction, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openSymbolizeWdt);
 	connect(m_AttributeTableAction, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openAttributeTable);
 	connect(m_AttributeFieldAction, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openAttributeField);
 	connect(m_SetCurrentLayer, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::setActivateMode);
 	connect(m_SaveAsFileVecor, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::saveAsFileVector);
 	connect(m_SaveAsFileRaster, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::saveAsFileRaster);
+	connect(m_LayerStyle, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::saveAsLayerStyle);//另存为图层样式文件的信号和槽
 	connect(m_Projectvector, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openProjectVectorDlg);
 	connect(m_ProjectRaster, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openProjectRasterDlg);
+	connect(m_LayeredColoring, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::applyLayeredColoring);
 }
 
 void DataViewerLayerTreeViewMenuProvider::openSymbolizeWdt()
@@ -370,3 +387,64 @@ void DataViewerLayerTreeViewMenuProvider::openSymbolizeWdt()
         }
     }
 }
+
+
+ // 实现栅格分层赋色的槽函数
+ void DataViewerLayerTreeViewMenuProvider::applyLayeredColoring() {
+	 // 获取当前选中的图层
+	 QgsMapLayer* layer = m_view->currentLayer();
+	 if (!layer || layer->type() != QgsMapLayerType::RasterLayer) {
+		 QMessageBox::warning(nullptr, tr("Warning"), tr("Please select a raster layer."));
+		 return;
+	 }
+
+	 QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>(layer);
+	 if (!rasterLayer)
+		 return;
+
+	 // 创建栅格渲染器小部件
+	 QgsSingleBandPseudoColorRendererWidget* rendererWidget = new QgsSingleBandPseudoColorRendererWidget(rasterLayer);
+	 //QgsRasterRendererWidget* rendererWidget = new QgsRasterRendererWidget(rasterLayer, rasterLayer->extent());
+
+	 // 创建对话框并添加栅格渲染器小部件
+	 QDialog dialog;
+	 dialog.setLayout(new QVBoxLayout);
+	 dialog.layout()->addWidget(rendererWidget);
+
+	 // 如果用户点击了"OK"按钮，就从小部件中获取新的渲染器，并应用到栅格图层上
+	 QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
+	 dialog.layout()->addWidget(buttonBox);
+	 connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+	 connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+	 if (dialog.exec() == QDialog::Accepted) {
+		 QgsRasterRenderer* newRenderer = rendererWidget->renderer();
+		 if (newRenderer) {
+			 rasterLayer->setRenderer(newRenderer);
+			 rasterLayer->triggerRepaint();
+		 }
+	 }
+ }
+	 
+ void DataViewerLayerTreeViewMenuProvider::saveAsLayerStyle() {
+	 QAction* action = qobject_cast<QAction*>(sender());	// 获取信号发送者
+	 if (action)
+	 {
+		 QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>(action->data().value<QgsMapLayer*>());	// 获取图层
+		 if (layer)
+		 {
+			 QgsSymbol* symbol = nullptr;
+			 symbol = QgsSymbol::defaultSymbol(layer->geometryType());
+			 // 创建符号选择对话框
+			 QgsSymbolSelectorDialog symbolDialog(symbol, QgsStyle::defaultStyle(), layer, nullptr);
+			 if (symbolDialog.exec() == QDialog::Accepted)
+			 {
+				 // 获取选择的符号
+				 QgsSymbol* selectedSymbol = symbolDialog.symbol();
+				 QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer(selectedSymbol);
+				 layer->setRenderer(renderer);
+				 layer->triggerRepaint();
+			 }
+		 }
+	 }
+ }

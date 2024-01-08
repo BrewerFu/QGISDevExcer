@@ -27,6 +27,7 @@
 
 #include <QgsEditorWidgetRegistry.h>
 #include <QgsVectorLayerCache.h>
+#pragma execution_character_set("utf-8")
 
 QgsVectorLayer *createTempLayer(QgsWkbTypes::GeometryType geomType, QString crs, QgsFields fields, QgsFeatureList features)
 {
