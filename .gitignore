@@ -26,6 +26,11 @@
 *.a
 *.lib
 
+# 项目配置
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
 # Executables
 *.exe
 *.out
