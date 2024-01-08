@@ -118,22 +118,22 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>D:\osgeo4w-qgis-dev\QGIS-ltr\include;D:\osgeo4w-qgis-dev\3rdParty\include;D:\osgeo4w-qgis-dev\QT5\include;D:\osgeo4w-qgis-dev\QT5\include\QtCore;D:\osgeo4w-qgis-dev\QT5\include\QtWidgets;D:\osgeo4w-qgis-dev\QT5\include\QtGui;D:\osgeo4w-qgis-dev\QT5\include\QtXml;D:\osgeo4w-qgis-dev\QT5\include\QtSvg;D:\osgeo4w-qgis-dev\QT5\include\QtNetWork;D:\osgeo4w-qgis-dev\QT5\include\QtSql;.\x64\Release\uic;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\osgeo4w-qgis-dev\3rdParty\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QGIS-ltr\include;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\3rdParty\include;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtCore;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtWidgets;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtGui;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtXml;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtSvg;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtNetWork;.\x64\Release\uic;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QGIS-ltr\lib;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\3rdParty\lib;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\lib;$(LibraryPath)</LibraryPath>
     <LibraryWPath>
     </LibraryWPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <AdditionalDependencies>sqlite3.lib;qgis_core.lib;qgis_app.lib;qgis_gui.lib;qgis_analysis.lib;gdal_i.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;qtmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qgis_core.lib;qgis_app.lib;qgis_gui.lib;qgis_analysis.lib;gdal_i.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;sqlite3.lib;qtmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
-      <AdditionalLibraryDirectories>D:\osgeo4w-qgis-dev\3rdParty;D:\osgeo4w-qgis-dev\QGIS-ltr\lib;D:\osgeo4w-qgis-dev\QT5\lib;D:\QGIS\OSGeo4W\apps\Python39\Lib;D:\QGIS\OSGeo4W\apps\qgis-dev\lib;D:\QGIS\OSGeo4W\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\3rdParty\lib;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QGIS-ltr\lib;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\lib;D:\QGIS\apps\Python39\lib;D:\QGIS\apps\qgis-ltr-dev\lib;D:\QGIS\apps\Qt5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\osgeo4w-qgis-dev\QGIS-ltr\include;.\;$(Qt_INCLUDEPATH_);D:\osgeo4w-qgis-dev\QT5\include\QtCrypto;D:\osgeo4w-qgis-dev\QT5\include\qt5keychain;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(Qt_INCLUDEPATH_);D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\QtCrypto;D:\QGIS\osgeo4w-qgis-dev\osgeo4w-qgis-dev\QT5\include\qt5keychain;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>

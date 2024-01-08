@@ -43,12 +43,6 @@
     <QtUic Include="S3dmXmlGenerateDlg.ui">
       <Filter>src-main\styleMng</Filter>
     </QtUic>
-    <QtUic Include="Project.ui">
-      <Filter>src-main\styleMng</Filter>
-    </QtUic>
-    <QtUic Include="Widget.ui">
-      <Filter>src-main\styleMng</Filter>
-    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BookmarkDialog.cpp">
@@ -84,9 +78,6 @@
     <ClCompile Include="S3dmXmlGenerateDlg.cpp">
       <Filter>src-main\styleMng</Filter>
     </ClCompile>
-    <ClCompile Include="ProjectDialog.cpp">
-      <Filter>src-main\styleMng</Filter>
-    </ClCompile>
     <ClCompile Include="QgsMapToolPolygon.cpp">
       <Filter>src-main\MapTool</Filter>
     </ClCompile>
@@ -101,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="LayerTreeViewMenuProvider.cpp">
       <Filter>src-main\MenuProvider</Filter>
-    </ClCompile>
-    <ClCompile Include="QgsMapToolSelect.cpp">
-      <Filter>src-main\MapTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,9 +119,6 @@
     <QtMoc Include="S3dmXmlGenerateDlg.h">
       <Filter>src-main\styleMng</Filter>
     </QtMoc>
-    <QtMoc Include="ProjectDialog.h">
-      <Filter>src-main\styleMng</Filter>
-    </QtMoc>
     <QtMoc Include="QgsMapToolPolygon.h">
       <Filter>src-main\MapTool</Filter>
     </QtMoc>
@@ -145,9 +130,6 @@
     </QtMoc>
     <QtMoc Include="LayerTreeViewMenuProvider.h">
       <Filter>src-main\MenuProvider</Filter>
-    </QtMoc>
-    <QtMoc Include="QgsMapToolSelect.h">
-      <Filter>src-main\MapTool</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

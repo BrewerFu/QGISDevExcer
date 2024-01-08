@@ -134,7 +134,7 @@ private:
 
 	QgsMapToolDrawLine* m_pDrawLineTool;
 
-	QgsMapToolSelect *m_pSelectTool;
+	MapToolSelect *m_pSelectTool;
 	
 };
 
