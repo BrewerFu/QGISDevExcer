@@ -98,22 +98,14 @@
      <addaction name="actionMoveFeatures"/>
      <addaction name="actionCopyAndMoveFeatures"/>
      <addaction name="actionRotateFeatures"/>
+     <addaction name="actionMergeSelectedFeatures"/>
+     <addaction name="actionSplitFeatures"/>
      <addaction name="actionScaleFeatures"/>
      <addaction name="actionSimplifyingFeatures"/>
-     <addaction name="actionAddRings"/>
-     <addaction name="actionAddParts"/>
-     <addaction name="actionFillRings"/>
-     <addaction name="actionDeleteRings"/>
-     <addaction name="actionDeleteParts"/>
-     <addaction name="actionReshapeFeatures"/>
      <addaction name="actionOffsetCurves"/>
-     <addaction name="actionSplitFeatures"/>
-     <addaction name="actionSplitParts"/>
-     <addaction name="actionMergeSelectedFeatures"/>
-     <addaction name="actionVertexTool"/>
      <addaction name="actionReverseLine"/>
-     <addaction name="actionCropOrExpandFeatures"/>
     </widget>
+    <action name=""/>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
@@ -211,6 +203,8 @@
    <addaction name="actionSelectGeometry"/>
    <addaction name="actionSwitchEdictable"/>
    <addaction name="actionAddGeometry"/>
+   <addaction name="actionDeleteFeatures"/>
+   <addaction name="actionVertexTool"/>
   </widget>
   <action name="actionAddVectorData">
    <property name="icon">
@@ -646,6 +640,10 @@
    </property>
   </action>
   <action name="actionVertexTool">
+   <property name="icon">
+    <iconset resource="dataviewer.qrc">
+     <normaloff>:/Resources/mActionVertexTool.svg</normaloff>:/Resources/mActionVertexTool.svg</iconset>
+   </property>
    <property name="text">
     <string>顶点工具（所有图层）</string>
    </property>
@@ -673,6 +671,15 @@
    </property>
    <property name="toolTip">
     <string>切换编辑模式</string>
+   </property>
+  </action>
+  <action name="actionDeleteFeatures">
+   <property name="icon">
+    <iconset resource="dataviewer.qrc">
+     <normaloff>:/Resources/mActionDeleteSelectedFeatures.svg</normaloff>:/Resources/mActionDeleteSelectedFeatures.svg</iconset>
+   </property>
+   <property name="text">
+    <string>删除要素</string>
    </property>
   </action>
  </widget>

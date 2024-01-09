@@ -11,12 +11,10 @@ MapToolMove::MapToolMove(QgsMapCanvas *canvas)
 
 MapToolMove::~MapToolMove()
 {
-
 }
 
 void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
 {
-
 
     if (e->button() == Qt::LeftButton)
     {
@@ -36,11 +34,11 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
         mSelectedFeatures = mLayer->selectedFeatures();
 
         // 如果没有选中的要素，显示错误信息
-        if(mSelectedFeatures.isEmpty())
+        if (mSelectedFeatures.isEmpty())
         {
-			QMessageBox::warning(nullptr, QObject::tr("Feature Error"), QObject::tr("No feature selected."));
-			return;
-		}
+            QMessageBox::warning(nullptr, QObject::tr("Feature Error"), QObject::tr("No feature selected."));
+            return;
+        }
 
         if (!mIsMoving)
         {
@@ -55,7 +53,6 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
             // 第二次点击，放置要素
             mIsMoving = false;
             QApplication::restoreOverrideCursor();
-
 
             for (auto &feature : mSelectedFeatures)
             {
@@ -101,7 +98,7 @@ void MapToolMove::canvasMoveEvent(QgsMapMouseEvent *e)
             // 更新要素
             feature.setGeometry(geom);
             mLayer->updateFeature(feature);
-        }   
+        }
 
         // 刷新地图
         mCanvas->refresh();
