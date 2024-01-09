@@ -33,6 +33,8 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
         // 获取选中的要素，并将第一个要素赋值给mSelectedFeatures
         mSelectedFeatures = mLayer->selectedFeatures();
 
+       
+
         // 如果没有选中的要素，显示错误信息
         if (mSelectedFeatures.isEmpty())
         {
@@ -92,10 +94,7 @@ void MapToolMove::canvasMoveEvent(QgsMapMouseEvent *e)
             // 变换几何
             geom.translate(dx, dy);
 
-            // 更新要素的几何
-            mLayer->changeGeometry(feature.id(), geom);
-
-            // 更新要素
+            // 更新要素和图层
             feature.setGeometry(geom);
             mLayer->updateFeature(feature);
         }

@@ -9,6 +9,7 @@
 #include <QCursor>
 #include <qapplication.h>
 
+
 class MapToolMove : public QgsMapTool
 {
     Q_OBJECT
@@ -23,7 +24,6 @@ public:
 
 private:
     QgsVectorLayer* mLayer = nullptr;
-    QgsRubberBand* mRubberBand = nullptr;
     QgsFeatureList mSelectedFeatures;
     bool mIsMoving = false;
     QCursor mCursor;

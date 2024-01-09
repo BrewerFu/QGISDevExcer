@@ -199,7 +199,8 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, bool doContai
 	}
 
 	// 设置光标
-	// QApplication::setOverrideCursor(Qt::WaitCursor);
+	 QApplication::setOverrideCursor(Qt::WaitCursor);
+
 	// 选择和选择几何体相交或在几何体内部的特征
 	QgsRectangle rect = selectGeomTrans.boundingBox();
 	pLayer->selectByRect(rect);
@@ -239,6 +240,7 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, bool doContai
 			newSelectedFeatures.insert(f.id());
 		}
 	}
+
 	// 确定和选择几何体最靠近特征的id
 	if (singleSelect && foundSingleFeature)
 	{
@@ -249,18 +251,16 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, bool doContai
 	{
 		// 得到所有选择特征的id
 		QgsFeatureIds selectedFeatures = pLayer->selectedFeatureIds();
-		QgsFeatureIds::const_iterator i = newSelectedFeatures.constEnd();
-		while (i != newSelectedFeatures.constBegin())
+		for (QgsFeatureIds::const_iterator iter = newSelectedFeatures.constBegin(); iter != newSelectedFeatures.constEnd(); iter++)
 		{
-			if (selectedFeatures.contains(*i))
+			if (selectedFeatures.contains(*iter))
 			{
-				selectedFeatures.remove(*i);
+				selectedFeatures.remove(*iter);
 			}
 			else
 			{
-				selectedFeatures.insert(*i);
+				selectedFeatures.insert(*iter);
 			}
-			--i;
 		}
 		// 更新选择集合
 		layerSelectedFeatures = selectedFeatures;
@@ -271,8 +271,14 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, bool doContai
 		layerSelectedFeatures.clear();
 		layerSelectedFeatures = newSelectedFeatures;
 	}
+	for (auto id: layerSelectedFeatures)
+	{
+		qDebug() << id;
+	}
+
 	// 设定选择的特征
 	pLayer->selectByIds(layerSelectedFeatures);
+	QApplication::restoreOverrideCursor();
 }
 
 // 选择几何特征,用于选择面状几何特征

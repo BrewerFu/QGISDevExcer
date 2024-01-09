@@ -2,6 +2,7 @@
 
 #include "BookmarkDialog.h"
 #include"LayerTreeViewMenuProvider.h"
+#include"MapToolCopyThenMove.h"
 #include"MapToolMove.h"
 #include"maptoolselect.h"
 #include "qgsmaptooldrawline.h"
@@ -19,6 +20,7 @@
 #include <qgsrectangle.h>
 #include <qgsvectorlayer.h>
 #include <QtWidgets/QMainWindow>
+
 
 // 数据查看器主窗口
 class DataViewer : public QMainWindow
@@ -110,7 +112,14 @@ public slots:
 	// 选择要素
 	void on_actionSelectGeometry_triggered();
 
+	// 删除选择要素
+	void on_actionDeleteFeatures_triggered();
+
+	//移动要素
 	void on_actionMoveFeatures_triggered();
+
+	//复制并移动要素
+	void on_actionCopyAndMoveFeatures_triggered();
 
 	// 移除图层
 	void removeLayer();
@@ -148,8 +157,12 @@ private:
 
 	QgsMapToolDrawLine* m_pDrawLineTool;
 
+	//----------------------------------------------------------------
+	//选择工具
 	MapToolSelect *m_pSelectTool;
+	//移动要素工具
 	MapToolMove* m_pMoveTool;
-
+	//复制要素工具
+	MapToolCopyThenMove* m_pCopyThenMove;
 };
 

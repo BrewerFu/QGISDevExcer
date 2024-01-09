@@ -128,7 +128,7 @@ DataViewer::DataViewer(QWidget *parent)
 	//--------------------------------------------------------------------------------------------
 	m_pSelectTool = new MapToolSelect(m_mapCanvas);
 	m_pMoveTool = new MapToolMove(m_mapCanvas);
-
+	m_pCopyThenMove = new MapToolCopyThenMove(m_mapCanvas);
 
 	// 初始化书签窗口
 	m_bookmarkDlg = new BookMarkDialog(m_mapCanvas);
@@ -621,7 +621,18 @@ void DataViewer::on_actionSwitchEdictable_triggered()
 					QMessageBox::Yes | QMessageBox::No);
 				if (reply == QMessageBox::Yes) {
 					// 如果用户选择"Yes"，则提交更改并停止编辑
-					vlayer->commitChanges();
+					// 提交更改
+					bool success = vlayer->commitChanges();
+
+					if (!success)
+					{
+						// 如果提交失败，获取并输出错误信息
+						QStringList errors = vlayer->commitErrors();
+						for (const auto& error : errors)
+						{
+							qDebug() << error;
+						}
+					}
 				}
 				else {
 					// 如果用户选择"No"，则放弃更改并停止编辑
@@ -643,7 +654,7 @@ void DataViewer::on_actionAddGeometry_triggered()
 	if (layer == nullptr)
 		return;
 
-	// 如果当前处于编辑模式，则退出编辑模式
+	// 如果当前处于添加模式，则退出添加模式
 	if (m_mapCanvas->mapTool() != nullptr && (m_mapCanvas->mapTool() == m_addPointTool || m_mapCanvas->mapTool() == m_addLineTool || m_mapCanvas->mapTool() == m_addPolygonTool))
 	{
 		m_mapCanvas->unsetMapTool(m_mapCanvas->mapTool());
@@ -657,7 +668,7 @@ void DataViewer::on_actionAddGeometry_triggered()
 		QgsVectorLayer *vecLayer = qobject_cast<QgsVectorLayer *>(layer);
 
 		//如果不处于编辑模式则返回
-		if (!layer->isEditable())
+		if (!vecLayer->isEditable())
 			return;
 
 		switch (vecLayer->geometryType()) // 根据图层类型选择不同的绘制工具
@@ -685,6 +696,32 @@ void DataViewer::on_actionAddGeometry_triggered()
 	}
 }
 
+void DataViewer::on_actionDeleteFeatures_triggered()
+{
+	QgsMapLayer* layer = m_mapCanvas->currentLayer();
+	if (layer == nullptr)
+		return;
+
+	//如果选中的为矢量图层
+	if (layer->isValid() && layer->type() == QgsMapLayerType::VectorLayer)
+	{
+		// 转换为矢量图层
+		QgsVectorLayer* vecLayer = qobject_cast<QgsVectorLayer*>(layer);
+
+		if (!vecLayer->isEditable())
+			return;
+
+		/*开始*/
+		QgsFeatureIds selectedFeatureIds = vecLayer->selectedFeatureIds();		//获取选中要素ID
+
+		if(selectedFeatureIds.isEmpty())
+			QMessageBox::warning(nullptr,QStringLiteral("Feature Error"), QStringLiteral("No feature selected."), QMessageBox::Ok);
+
+		vecLayer->deleteFeatures(selectedFeatureIds);	//删除选中要素
+		m_mapCanvas->refresh();		//刷新显示
+	}
+}
+
 void DataViewer::on_actionMoveFeatures_triggered()
 {
 	if (m_mapCanvas->mapTool() != m_pMoveTool)
@@ -695,5 +732,16 @@ void DataViewer::on_actionMoveFeatures_triggered()
 	{
 		m_mapCanvas->unsetMapTool(m_pMoveTool);
 	}
+}
 
+void DataViewer::on_actionCopyAndMoveFeatures_triggered()
+{
+	if (m_mapCanvas->mapTool() != m_pCopyThenMove)
+	{
+		m_mapCanvas->setMapTool(m_pCopyThenMove);
+	}
+	else
+	{
+		m_mapCanvas->unsetMapTool(m_pCopyThenMove);
+	}
 }
