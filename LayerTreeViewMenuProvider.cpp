@@ -72,9 +72,9 @@ QMenu* DataViewerLayerTreeViewMenuProvider::createContextMenu()
 				//添加属性字段命令
 				menu->addAction(m_AttributeFieldAction);
 
-				m_SetCurrentLayer->setData(QVariant::fromValue(layer)); // 设置图层数据
+				m_IsActive->setData(QVariant::fromValue(layer)); // 设置图层数据
 				//添加启用当前图层命令
-				menu->addAction(m_SetCurrentLayer);
+				menu->addAction(m_IsActive);
 
 				m_Projectvector->setData(QVariant::fromValue(layer));		//设置图层数据
 				//添加启用投影命令
@@ -109,7 +109,7 @@ void DataViewerLayerTreeViewMenuProvider::initProvider()
 	m_SymbolizeAction = new QAction(QStringLiteral("符号化窗口"));
 	m_AttributeTableAction = new QAction(QStringLiteral("打开属性表"));
 	m_AttributeFieldAction = new QAction(QStringLiteral("打开属性字段"));
-	m_SetCurrentLayer = new QAction(QStringLiteral("启用或禁用编辑"));
+	m_IsActive = new QAction(QStringLiteral("启用或禁用编辑"));
 	m_SaveAsFileVecor = new QAction(QStringLiteral("要素另存为"));
 	m_SaveAsFileRaster = new QAction(QStringLiteral("另存为"));
 	m_Projectvector = new QAction(QStringLiteral("投影变换"));
@@ -121,7 +121,7 @@ void DataViewerLayerTreeViewMenuProvider::initProvider()
 	connect(m_SymbolizeAction, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openSymbolizeWdt);
 	connect(m_AttributeTableAction, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openAttributeTable);
 	connect(m_AttributeFieldAction, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::openAttributeField);
-	connect(m_SetCurrentLayer, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::setActivateMode);
+	connect(m_IsActive, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::setIsActivate);
 	connect(m_SaveAsFileVecor, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::saveAsFileVector);
 	connect(m_SaveAsFileRaster, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::saveAsFileRaster);
 	connect(m_LayerStyle, &QAction::triggered, this, &DataViewerLayerTreeViewMenuProvider::saveAsLayerStyle);//另存为图层样式文件的信号和槽
@@ -198,7 +198,7 @@ void DataViewerLayerTreeViewMenuProvider::openSymbolizeWdt()
 	 }
  }
 
- void DataViewerLayerTreeViewMenuProvider::setActivateMode()
+ void DataViewerLayerTreeViewMenuProvider::setIsActivate()
  {
 	 QAction* action = qobject_cast<QAction*>(sender());
 	 if (action)
@@ -206,12 +206,9 @@ void DataViewerLayerTreeViewMenuProvider::openSymbolizeWdt()
 		 QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>(action->data().value<QgsMapLayer*>());
 		 if (layer)
 		 {
-			 m_canvas->setCurrentLayer(layer);
-			 // 发射激活信号
-			 emit activeMode();
+			 emit switchLayerEditable(true);
 		 }
 	 }
-
  }
 
  void  DataViewerLayerTreeViewMenuProvider::saveAsFileVector()

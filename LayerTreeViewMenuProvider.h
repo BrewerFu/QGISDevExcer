@@ -37,13 +37,13 @@ public:
 	void initProvider();	// 初始化右键菜单
 
 signals:
-	void activeMode();	//激活编辑信号
+	void switchLayerEditable(bool flag);	//切换编辑信号
 
 public slots:
 	void openSymbolizeWdt();	// 打开符号化窗口
 	void openAttributeTable();	// 打开属性表
 	void openAttributeField();	// 打开字段属性表
-	void setActivateMode();	// 激活编辑模式
+	void setIsActivate();	// 激活编辑模式
 	void saveAsFileVector();	// 另存为矢量文件
 	void saveAsFileRaster();	// 另存为栅格文件
 	void openProjectVectorDlg();	// 打开矢量投影转换窗口
@@ -55,7 +55,7 @@ protected:
 	QAction* m_SymbolizeAction = nullptr;
 	QAction* m_AttributeTableAction = nullptr;
 	QAction* m_AttributeFieldAction = nullptr;
-	QAction* m_SetCurrentLayer = nullptr;
+	QAction* m_IsActive = nullptr;
 	QAction* m_SaveAsFileVecor = nullptr;
 	QAction* m_SaveAsFileRaster = nullptr;
 	QAction* m_Projectvector = nullptr;

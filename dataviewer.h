@@ -2,6 +2,7 @@
 
 #include "BookmarkDialog.h"
 #include"LayerTreeViewMenuProvider.h"
+#include"MapToolMove.h"
 #include"maptoolselect.h"
 #include "qgsmaptooldrawline.h"
 #include "ui_dataviewer.h"
@@ -18,7 +19,6 @@
 #include <qgsrectangle.h>
 #include <qgsvectorlayer.h>
 #include <QtWidgets/QMainWindow>
-
 
 // 数据查看器主窗口
 class DataViewer : public QMainWindow
@@ -37,6 +37,8 @@ public:
 	void initMapOverviewCanvas();
 
 public slots:
+	/*工程操作*/
+	//-------------------------------------------------------------------------
 	// 打开工程
 	void on_actionOpenProject_triggered();
 	// 保存工程
@@ -44,6 +46,8 @@ public slots:
 	// 另存工程
 	void on_actionSaveAsProject_triggered();
 
+	/*数据操作*/
+	//-------------------------------------------------------------------------
 	// 添加矢量数据
 	void on_actionAddVectorData_triggered();
 	// 添加栅格数据
@@ -55,6 +59,8 @@ public slots:
 	// 添加WCS图层
 	void on_actionAddWcsLayer_triggered();
 
+	/*移动工具*/
+	//-------------------------------------------------------------------------
 	// 使用地图放大工具
 	void on_actionZoomIn_triggered();
 	// 使用地图缩小工具
@@ -82,8 +88,8 @@ public slots:
 	void on_actionStylelibMng_triggered();
 	void on_actionSelfStyleMng_triggered();
 
-	//编辑模式
-	void on_actionActivateMode_triggered();
+	//添加要素模式
+	void on_actionAddGeometry_triggered();
 
 	// 创建新的地图书签
 	void on_actionNewBookmark_triggered();
@@ -96,7 +102,15 @@ public slots:
 	void on_actionOverviewMap_triggered();
 
 	void on_actionPolyline_triggered();
+
+	/*几何图元编辑工具*/
+	//-------------------------------------------------------------------------
+	
+	void on_actionSwitchEdictable_triggered();
+	// 选择要素
 	void on_actionSelectGeometry_triggered();
+
+	void on_actionMoveFeatures_triggered();
 
 	// 移除图层
 	void removeLayer();
@@ -135,6 +149,7 @@ private:
 	QgsMapToolDrawLine* m_pDrawLineTool;
 
 	MapToolSelect *m_pSelectTool;
-	
+	MapToolMove* m_pMoveTool;
+
 };
 

@@ -124,7 +124,11 @@ DataViewer::DataViewer(QWidget *parent)
 	m_measureAreaTool = new MeasureTool(m_mapCanvas, true);
 	// 绘制工具
 	m_pDrawLineTool = new QgsMapToolDrawLine(m_mapCanvas);
+
+	//--------------------------------------------------------------------------------------------
 	m_pSelectTool = new MapToolSelect(m_mapCanvas);
+	m_pMoveTool = new MapToolMove(m_mapCanvas);
+
 
 	// 初始化书签窗口
 	m_bookmarkDlg = new BookMarkDialog(m_mapCanvas);
@@ -140,6 +144,7 @@ DataViewer::DataViewer(QWidget *parent)
 		app->setObjectName(QStringLiteral("QgisApp"));
 	}
 }
+
 DataViewer::~DataViewer()
 {
 }
@@ -503,6 +508,7 @@ void DataViewer::initLayerTreeView()
 	m_layerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge(QgsProject::instance()->layerTreeRoot(), m_mapCanvas, this);
 	connect(QgsProject::instance(), SIGNAL(writeProject(QDomDocument &)), m_layerTreeCanvasBridge, SLOT(writeProject(QDomDocument &)));
 	connect(QgsProject::instance(), SIGNAL(readProject(QDomDocument)), m_layerTreeCanvasBridge, SLOT(readProject(QDomDocument)));
+
 	// 添加组命令
 	QAction *actionAddGroup = new QAction(QStringLiteral("添加组"), this);
 	actionAddGroup->setIcon(QIcon(QStringLiteral(":/Resources/mActionAddGroup.svg")));
@@ -525,11 +531,38 @@ void DataViewer::initLayerTreeView()
 	actionRemoveLayer->setToolTip(QStringLiteral("移除图层/组"));
 	connect(actionRemoveLayer, &QAction::triggered, this, &DataViewer::removeLayer);
 
+	//-----------------------------------------------------------------------------------------------------------------
 	// 右键菜单
 	m_layertreemenuProvider = new DataViewerLayerTreeViewMenuProvider(m_layerTreeView, m_mapCanvas);
 	m_layerTreeView->setMenuProvider(m_layertreemenuProvider);
-	// 链接右键菜单编辑模式和ToolBar编辑模式
-	connect(m_layertreemenuProvider, &DataViewerLayerTreeViewMenuProvider::activeMode, this, &DataViewer::on_actionActivateMode_triggered);
+
+	//链接切换编辑模式
+	connect(m_layertreemenuProvider, &DataViewerLayerTreeViewMenuProvider::switchLayerEditable, this, &DataViewer::on_actionSwitchEdictable_triggered);
+
+	// 连接layerTreeModel的rowsInserted信号
+	connect(m_layerTreeView->layerTreeModel(), &QAbstractItemModel::rowsInserted, 
+		this, [this](const QModelIndex &parent, int first, int last) {
+			// 获取父节点
+			QgsLayerTreeNode* FatherNode = m_layerTreeView->layerTreeModel()->index2node(parent);
+			//获取子节点
+			QgsLayerTreeNode* ChildNode = FatherNode->children()[first];
+			//将子节点转换为图层
+			QgsLayerTreeLayer* treeLayer = qobject_cast<QgsLayerTreeLayer*>(ChildNode);
+
+			if (treeLayer) {
+				// 将新添加的图层设置为当前图层
+				this->m_mapCanvas->setCurrentLayer(treeLayer->layer());
+			}
+		});
+
+
+	//设置选中图层数中图层为mapCanvas当前图层
+	connect(m_layerTreeView, &QgsLayerTreeView::currentLayerChanged,
+		[this](QgsMapLayer* layer) {
+			this->m_mapCanvas->setCurrentLayer(layer);
+		});
+
+	//---------------------------------------------------------------------------------------------------------------
 
 	QToolBar *toolbar = new QToolBar();
 	toolbar->setIconSize(QSize(16, 16));
@@ -549,6 +582,8 @@ void DataViewer::initLayerTreeView()
 	w->setLayout(vBoxLayout);
 	this->ui.LayerTreeControl->setWidget(w);
 }
+
+
 void DataViewer::initMapOverviewCanvas()
 {
 	m_overviewCanvas->setBackgroundColor(QColor(180, 180, 180));
@@ -567,7 +602,42 @@ void DataViewer::initMapOverviewCanvas()
 	m_overviewCanvas->setLayers(m_mapCanvas->layers());
 }
 
-void DataViewer::on_actionActivateMode_triggered()
+void DataViewer::on_actionSwitchEdictable_triggered()
+{
+	QgsMapLayer *layer = m_mapCanvas->currentLayer();
+	if (layer == nullptr)
+		return;
+	if (layer->type()==QgsMapLayerType::VectorLayer)
+	{
+		QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>(layer);
+		if (vlayer)
+		{
+			// 检查图层是否处于编辑模式并且被更改过
+			if (vlayer->isEditable() && vlayer->isModified()) 
+			{
+				// 弹出一个对话框，询问用户是否保存更改
+				QMessageBox::StandardButton reply;
+				reply = QMessageBox::question(nullptr, "Save changes", "Do you want to save changes to the layer?",
+					QMessageBox::Yes | QMessageBox::No);
+				if (reply == QMessageBox::Yes) {
+					// 如果用户选择"Yes"，则提交更改并停止编辑
+					vlayer->commitChanges();
+				}
+				else {
+					// 如果用户选择"No"，则放弃更改并停止编辑
+					vlayer->rollBack();
+				}
+			}
+			else 
+			{
+				// 如果图层不处于编辑模式，则开始编辑
+				vlayer->startEditing();
+			}
+		}
+	}
+}
+
+void DataViewer::on_actionAddGeometry_triggered()
 {
 	QgsMapLayer *layer = m_mapCanvas->currentLayer();
 	if (layer == nullptr)
@@ -580,12 +650,16 @@ void DataViewer::on_actionActivateMode_triggered()
 		return;
 	}
 
-	// 如果图层有效且为矢量图层，则进入编辑模式
+	// 如果图层有效且为矢量图层，则进入添加模式
 	if (layer->isValid() && layer->type() == QgsMapLayerType::VectorLayer)
 	{
 		// 转换为矢量图层
 		QgsVectorLayer *vecLayer = qobject_cast<QgsVectorLayer *>(layer);
-		vecLayer->startEditing();
+
+		//如果不处于编辑模式则返回
+		if (!layer->isEditable())
+			return;
+
 		switch (vecLayer->geometryType()) // 根据图层类型选择不同的绘制工具
 		{
 		case QgsWkbTypes::GeometryType::PointGeometry:
@@ -609,4 +683,17 @@ void DataViewer::on_actionActivateMode_triggered()
 			break;
 		}
 	}
+}
+
+void DataViewer::on_actionMoveFeatures_triggered()
+{
+	if (m_mapCanvas->mapTool() != m_pMoveTool)
+	{
+		m_mapCanvas->setMapTool(m_pMoveTool);
+	}
+	else
+	{
+		m_mapCanvas->unsetMapTool(m_pMoveTool);
+	}
+
 }

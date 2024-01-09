@@ -46,6 +46,7 @@ private:
 
 	QgsFeatureIds layerSelectedFeatures; // 图层被选择的要素
 	bool StatusFlag;					 // 工具状态
+
 private:
 	// 提取鼠标单次点击位置一定范围作为选择区域
 	void ExpandSingleClicked();
