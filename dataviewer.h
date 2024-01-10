@@ -4,6 +4,7 @@
 #include"LayerTreeViewMenuProvider.h"
 #include"MapToolCopyThenMove.h"
 #include"MapToolMove.h"
+#include"MapToolRotate.h"
 #include"maptoolselect.h"
 #include "qgsmaptooldrawline.h"
 #include "ui_dataviewer.h"
@@ -20,7 +21,6 @@
 #include <qgsrectangle.h>
 #include <qgsvectorlayer.h>
 #include <QtWidgets/QMainWindow>
-
 
 // 数据查看器主窗口
 class DataViewer : public QMainWindow
@@ -121,6 +121,10 @@ public slots:
 	//复制并移动要素
 	void on_actionCopyAndMoveFeatures_triggered();
 
+	//旋转要素
+	void on_actionRotateFeatures_triggered();
+
+	//-------------------------------------------------------------------------
 	// 移除图层
 	void removeLayer();
 
@@ -163,6 +167,9 @@ private:
 	//移动要素工具
 	MapToolMove* m_pMoveTool;
 	//复制要素工具
-	MapToolCopyThenMove* m_pCopyThenMove;
+	MapToolCopyThenMove* m_pCopyThenMoveTool;
+	//旋转工具
+	MapToolRotate* m_pRotateTool;
+
 };
 

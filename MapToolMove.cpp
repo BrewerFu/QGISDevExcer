@@ -20,8 +20,7 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
     {
         mLayer = dynamic_cast<QgsVectorLayer *>(canvas()->currentLayer());
 
-        if (!mLayer->isEditable())
-            return;
+
 
         if (!mLayer)
         {
@@ -29,6 +28,9 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
             QMessageBox::warning(nullptr, QObject::tr("Layer Error"), QObject::tr("No vector layer selected."));
             return;
         }
+
+        if (!mLayer->isEditable())
+            return;
 
         // 获取选中的要素，并将第一个要素赋值给mSelectedFeatures
         mSelectedFeatures = mLayer->selectedFeatures();
@@ -52,26 +54,9 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
         }
         else
         {
-            // 第二次点击，放置要素
+            // 第二次点击，结束移动
             mIsMoving = false;
             QApplication::restoreOverrideCursor();
-
-            for (auto &feature : mSelectedFeatures)
-            {
-                // 获取要素的几何
-                QgsGeometry geom = feature.geometry();
-
-                // 计算新的位置
-                QgsPointXY newPoint = toMapCoordinates(e->pos());
-                double dx = newPoint.x() - mStartPointMapCoords.x();
-                double dy = newPoint.y() - mStartPointMapCoords.y();
-
-                // 变换几何
-                geom.translate(dx, dy);
-
-                // 更新要素的几何
-                mLayer->changeGeometry(feature.id(), geom);
-            }
         }
     }
 }

@@ -126,9 +126,11 @@ DataViewer::DataViewer(QWidget *parent)
 	m_pDrawLineTool = new QgsMapToolDrawLine(m_mapCanvas);
 
 	//--------------------------------------------------------------------------------------------
+	//要素编辑工具
 	m_pSelectTool = new MapToolSelect(m_mapCanvas);
 	m_pMoveTool = new MapToolMove(m_mapCanvas);
-	m_pCopyThenMove = new MapToolCopyThenMove(m_mapCanvas);
+	m_pCopyThenMoveTool = new MapToolCopyThenMove(m_mapCanvas);
+	m_pRotateTool = new MapToolRotate(m_mapCanvas);
 
 	// 初始化书签窗口
 	m_bookmarkDlg = new BookMarkDialog(m_mapCanvas);
@@ -736,12 +738,24 @@ void DataViewer::on_actionMoveFeatures_triggered()
 
 void DataViewer::on_actionCopyAndMoveFeatures_triggered()
 {
-	if (m_mapCanvas->mapTool() != m_pCopyThenMove)
+	if (m_mapCanvas->mapTool() != m_pCopyThenMoveTool)
 	{
-		m_mapCanvas->setMapTool(m_pCopyThenMove);
+		m_mapCanvas->setMapTool(m_pCopyThenMoveTool);
 	}
 	else
 	{
-		m_mapCanvas->unsetMapTool(m_pCopyThenMove);
+		m_mapCanvas->unsetMapTool(m_pCopyThenMoveTool);
+	}
+}
+
+void DataViewer::on_actionRotateFeatures_triggered()
+{
+	if (m_mapCanvas->mapTool() != m_pRotateTool)
+	{
+		m_mapCanvas->setMapTool(m_pRotateTool);
+	}
+	else
+	{
+		m_mapCanvas->unsetMapTool(m_pRotateTool);
 	}
 }

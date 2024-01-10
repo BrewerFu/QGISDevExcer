@@ -1,18 +1,18 @@
-#include"MapToolCopyThenMove.h"
+#include "MapToolRotate.h"
 
-MapToolCopyThenMove::MapToolCopyThenMove(QgsMapCanvas* canvas)
-	:QgsMapTool(canvas)
-	,mpvecLayer(nullptr)
+MapToolRotate::MapToolRotate(QgsMapCanvas* mapcanvas)
+	:QgsMapTool(mapcanvas)
+    ,mpvecLayer(nullptr)
 {
 
 }
 
-MapToolCopyThenMove::~MapToolCopyThenMove()
+MapToolRotate::~MapToolRotate()
 {
 
 }
 
-void MapToolCopyThenMove::canvasPressEvent(QgsMapMouseEvent* e)
+void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
 {
     mpvecLayer = dynamic_cast<QgsVectorLayer*>(canvas()->currentLayer());
 
@@ -32,6 +32,9 @@ void MapToolCopyThenMove::canvasPressEvent(QgsMapMouseEvent* e)
         {
             // 第一次点击左键，开始移动要素
             mIsMoving = true;
+
+            //获取原本的要素IDs
+            mOriSelectedFeatureIds = mpvecLayer->selectedFeatureIds();
 
             // 获取选中的要素，复制要素到mCopiedFeatures
             for (const auto& feature : mpvecLayer->selectedFeatures())
@@ -56,56 +59,51 @@ void MapToolCopyThenMove::canvasPressEvent(QgsMapMouseEvent* e)
                 return;
             }
 
+            //计算选中要素的几何中心
+            mRotateCenter = calculateCenterofFeatures(mCopiedFeatures);
             mLastPointMapCoords = toMapCoordinates(e->pos());
             mCursor = QCursor(Qt::ClosedHandCursor);
             QApplication::setOverrideCursor(mCursor);
         }
         else
         {
-            // 第二及以后次点击左键，放置要素
+            // 第二及点击左键，放置复制的要素并删除原先的要素
+            mIsMoving = false;
             QApplication::restoreOverrideCursor();
+            mpvecLayer->deleteFeatures(mOriSelectedFeatureIds);
 
-            // 复制一份新的要素添加当前位置的图层中
-            for (auto& feature : mCopiedFeatures)
-            {
-
-                //新建复制的要素
-                QgsFeature newFeature;
-                newFeature.setGeometry(feature.geometry());
-                newFeature.setAttributes(feature.attributes());
-
-                // 添加复制的的要素
-                mpvecLayer->addFeature(feature);
-            }
+            //刷新显示
+            mCanvas->refresh();
         }
     }
     else if (e->button() == Qt::RightButton)    //右键点击
     {
         if (mIsMoving)
         {
-            //第二次及以后点击右键
+            //第二次及以后点击右键，取消变换，删除复制的要素
             mIsMoving = false;  //取消移动
+            QApplication::restoreOverrideCursor();
 
-            //删除用于移动的要素
-            for (QgsFeatureList::iterator iter = mCopiedFeatures.begin(); iter !=mCopiedFeatures.end(); iter++)
+            //删除用于旋转的要素
+            for (QgsFeatureList::iterator iter = mCopiedFeatures.begin(); iter != mCopiedFeatures.end(); iter++)
             {
                 mpvecLayer->deleteFeature(iter->id());
             }
 
             mCopiedFeatures.clear();    //清除选中要素
             mCanvas->refresh();
-            QApplication::restoreOverrideCursor();
+
         }
     }
 }
 
-void MapToolCopyThenMove::canvasMoveEvent(QgsMapMouseEvent* e)
+
+void MapToolRotate::canvasMoveEvent(QgsMapMouseEvent* e)
 {
     if (mIsMoving == false)
         return;
     else
     {
-
         for (auto& feature : mCopiedFeatures)
         {
             // 获取要素的几何
@@ -113,11 +111,19 @@ void MapToolCopyThenMove::canvasMoveEvent(QgsMapMouseEvent* e)
 
             // 计算新的位置
             QgsPointXY newPointMapCoords = toMapCoordinates(e->pos());
-            double dx = newPointMapCoords.x() - mLastPointMapCoords.x();
-            double dy = newPointMapCoords.y() - mLastPointMapCoords.y();
+
+            // 计算从中心点到第一个点的方位角
+            double angle1 = mRotateCenter.azimuth(mLastPointMapCoords);
+
+            // 计算从中心点到第二个点的方位角
+            double angle2 = mRotateCenter.azimuth(newPointMapCoords);
+
+            // 计算两个方位角的差
+            double rotationAngle = angle2 - angle1;
+
 
             // 变换几何
-            geom.translate(dx, dy);
+            geom.rotate(rotationAngle,mRotateCenter);
 
             // 更新要素
             feature.setGeometry(geom);
@@ -130,4 +136,21 @@ void MapToolCopyThenMove::canvasMoveEvent(QgsMapMouseEvent* e)
         // 更新开始点的坐标，以便下次移动时使用
         mLastPointMapCoords = toMapCoordinates(e->pos());
     }
+}
+
+QgsPointXY calculateCenterofFeatures(const QgsFeatureList& features)
+{
+    double centerX = 0.0, centerY = 0.0;
+    //迭代器
+    for (QgsFeatureList::const_iterator iter = features.constBegin(); iter != features.constEnd(); iter++)
+    {
+        const QgsGeometry geom = iter->geometry();
+        const QgsPointXY centroid = geom.centroid().asPoint();
+        centerX += centroid.x();
+        centerY += centroid.y();
+    }
+    centerX /= features.size();
+    centerY /= features.size();
+
+    return QgsPointXY(centerX, centerY);
 }
