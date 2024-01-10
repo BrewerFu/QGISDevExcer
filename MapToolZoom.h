@@ -7,30 +7,32 @@
 #include<qgsmapcanvas.h>
 #include<qmessagebox.h>
 #include<qapplication.h>
+#include<qgsmultipolygon.h>
+#include<qgspolygon.h>
+#include<qgslinestring.h>
+#include<qgsmultipoint.h>
+#include<qgsmultilinestring.h>
+#include<qgsmultipolygon.h>
 #include<qgsrubberband.h>
 
-
-class MapToolRotate:public QgsMapTool
+class MapToolZoom :public QgsMapTool
 {
 	Q_OBJECT
 
 public:
-	MapToolRotate(QgsMapCanvas* mapcanvas);
-	~MapToolRotate();
+	MapToolZoom(QgsMapCanvas* canvas);
+	~MapToolZoom();
 
 	void canvasPressEvent(QgsMapMouseEvent* e) override;
 	void canvasMoveEvent(QgsMapMouseEvent* e) override;
-
 
 private:
 	QgsVectorLayer* mpvecLayer;
 	QgsFeatureIds mOriSelectedFeatureIds;
 	QMap<QgsFeatureId, QgsRubberBand*> mMapIdToRubber;
-
-	QgsPointXY mRotateCenter;
-	QCursor mCursor;
 	bool mIsMoving = false;
 	QgsPointXY mLastPointMapCoords;
+	QgsPointXY mZoomCenter;
 };
 
-QgsPointXY calculateCenterofFeatures(const QgsFeatureIds& featureIds,const QgsVectorLayer* layer);
+QgsPointXY calculateCenterofFeatures(const QgsFeatureIds& featureIds, const QgsVectorLayer* layer);

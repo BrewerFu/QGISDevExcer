@@ -32,7 +32,7 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
         if (!mLayer->isEditable())
             return;
 
-        // 获取选中的要素，并将第一个要素赋值给mSelectedFeatures
+        // 获取选中的要素，并将要素赋值给mSelectedFeatures
         mSelectedFeatures = mLayer->selectedFeatures();
 
        

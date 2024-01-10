@@ -131,6 +131,9 @@ DataViewer::DataViewer(QWidget *parent)
 	m_pMoveTool = new MapToolMove(m_mapCanvas);
 	m_pCopyThenMoveTool = new MapToolCopyThenMove(m_mapCanvas);
 	m_pRotateTool = new MapToolRotate(m_mapCanvas);
+	m_pSplitTool = new MapToolSplit(m_mapCanvas);
+	m_pZoomTool = new MapToolZoom(m_mapCanvas);
+
 
 	// 初始化书签窗口
 	m_bookmarkDlg = new BookMarkDialog(m_mapCanvas);
@@ -548,12 +551,15 @@ void DataViewer::initLayerTreeView()
 			QgsLayerTreeNode* FatherNode = m_layerTreeView->layerTreeModel()->index2node(parent);
 			//获取子节点
 			QgsLayerTreeNode* ChildNode = FatherNode->children()[first];
-			//将子节点转换为图层
-			QgsLayerTreeLayer* treeLayer = qobject_cast<QgsLayerTreeLayer*>(ChildNode);
 
-			if (treeLayer) {
+			if(ChildNode->nodeType() == QgsLayerTreeNode::NodeLayer) 
+			{
+				//将子节点转换为图层
+				QgsLayerTreeLayer* treeLayer = qobject_cast<QgsLayerTreeLayer*>(ChildNode);
+				if (treeLayer) {
 				// 将新添加的图层设置为当前图层
 				this->m_mapCanvas->setCurrentLayer(treeLayer->layer());
+				}
 			}
 		});
 
@@ -815,3 +821,26 @@ void DataViewer::on_actionRotateFeatures_triggered()
 	}
 }
 
+void DataViewer::on_actionSplitFeatures_triggered()
+{
+	if (m_mapCanvas->mapTool() != m_pSplitTool)
+	{
+		m_mapCanvas->setMapTool(m_pSplitTool);
+	}
+	else
+	{
+		m_mapCanvas->unsetMapTool(m_pSplitTool);
+	}
+}
+
+void DataViewer::on_actionScaleFeatures_triggered()
+{
+	if (m_mapCanvas->mapTool() != m_pZoomTool)
+	{
+		m_mapCanvas->setMapTool(m_pZoomTool);
+	}
+	else
+	{
+		m_mapCanvas->unsetMapTool(m_pZoomTool);
+	}
+}

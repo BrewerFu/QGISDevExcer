@@ -5,6 +5,8 @@
 #include"MapToolCopyThenMove.h"
 #include"MapToolMove.h"
 #include"MapToolRotate.h"
+#include"MapToolSplit.h"
+#include"MapToolZoom.h"
 #include"maptoolselect.h"
 #include "qgsmaptooldrawline.h"
 #include "ui_dataviewer.h"
@@ -127,7 +129,11 @@ public slots:
 	//合并要素
 	void on_actionMergeSelectedFeatures_triggered();
 
-	void 
+	//分割要素
+	void on_actionSplitFeatures_triggered();
+
+	//缩放要素
+	void on_actionScaleFeatures_triggered();
 
 	//-------------------------------------------------------------------------
 	// 移除图层
@@ -175,6 +181,9 @@ private:
 	MapToolCopyThenMove* m_pCopyThenMoveTool;
 	//旋转工具
 	MapToolRotate* m_pRotateTool;
-
+	//分割工具
+	MapToolSplit* m_pSplitTool;
+	//缩放工具
+	MapToolZoom* m_pZoomTool;
 };
 

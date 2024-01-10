@@ -1,24 +1,25 @@
-#include "MapToolRotate.h"
+#include "MapToolZoom.h"
 
-MapToolRotate::MapToolRotate(QgsMapCanvas* mapcanvas)
-	:QgsMapTool(mapcanvas)
-    ,mpvecLayer(nullptr)
+
+MapToolZoom::MapToolZoom(QgsMapCanvas* canvas)
+    : QgsMapTool(canvas)
+    , mpvecLayer(nullptr)
 {
 
 }
 
-MapToolRotate::~MapToolRotate()
+MapToolZoom::~MapToolZoom()
 {
     QMap<QgsFeatureId, QgsRubberBand*>::iterator iter;
     for (iter = mMapIdToRubber.begin(); iter != mMapIdToRubber.end(); iter++)
     {
         iter.value()->reset();
-        if (iter.value())
-            delete iter.value();
-    }
+        if(iter.value())
+		    delete iter.value();
+	}
 }
 
-void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
+void MapToolZoom::canvasPressEvent(QgsMapMouseEvent* e)
 {
     mpvecLayer = dynamic_cast<QgsVectorLayer*>(canvas()->currentLayer());
 
@@ -36,34 +37,32 @@ void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
     {
         if (!mIsMoving)
         {
-            // 第一次点击左键，开始旋转要素
+            // 第一次点击左键，开始移动要素
             mIsMoving = true;
 
             //获取原本的要素IDs
             mOriSelectedFeatureIds = mpvecLayer->selectedFeatureIds();
 
-
             QColor fillColor = Qt::red;  // 创建一个红色
             fillColor.setAlpha(50);  // 设置透明度为100
-
             // 获取选中的要素，映射要素到RubberBand
             for (const auto& feature : mpvecLayer->selectedFeatures())
             {
-                QgsRubberBand* rubberBand = new QgsRubberBand(mCanvas, mpvecLayer->geometryType());
+                QgsRubberBand* rubberBand = new QgsRubberBand(mCanvas,mpvecLayer->geometryType());
                 rubberBand->setColor(fillColor);
                 rubberBand->addGeometry(feature.geometry());
                 mMapIdToRubber.insert(feature.id(), rubberBand);
             }
 
             // 如果没有选中的要素，显示错误信息
-            if (mOriSelectedFeatureIds.size() == 0)
+            if (mOriSelectedFeatureIds.size()==0)
             {
                 QMessageBox::warning(nullptr, QObject::tr("Feature Error"), QObject::tr("No feature selected."));
                 return;
             }
 
             //计算选中要素的几何中心
-            mRotateCenter = calculateCenterofFeatures(mOriSelectedFeatureIds,mpvecLayer);
+            mZoomCenter = calculateCenterofFeatures(mOriSelectedFeatureIds,mpvecLayer);
             mLastPointMapCoords = toMapCoordinates(e->pos());
             mCursor = QCursor(Qt::ClosedHandCursor);
             QApplication::setOverrideCursor(mCursor);
@@ -81,8 +80,7 @@ void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
                 mpvecLayer->changeGeometry(iter.key(), geom);
                 iter.value()->reset();
                 delete iter.value();
-			}
-
+            }
             mMapIdToRubber.clear();
             //刷新显示
             mCanvas->refresh();
@@ -92,7 +90,7 @@ void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
     {
         if (mIsMoving)
         {
-            //第二次及以后点击右键，取消变换，删除RubberBand
+            //第二次及以后点击右键，取消变换，清除rubberband
             mIsMoving = false;  //取消移动
             QApplication::restoreOverrideCursor();
 
@@ -101,8 +99,8 @@ void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
             for (iter = mMapIdToRubber.begin(); iter != mMapIdToRubber.end(); iter++)
             {
                 iter.value()->reset();
-                delete iter.value();
-            }
+				delete iter.value();
+			}
             mMapIdToRubber.clear();
             mCanvas->refresh();
         }
@@ -110,7 +108,7 @@ void MapToolRotate::canvasPressEvent(QgsMapMouseEvent* e)
 }
 
 
-void MapToolRotate::canvasMoveEvent(QgsMapMouseEvent* e)
+void MapToolZoom::canvasMoveEvent(QgsMapMouseEvent* e)
 {
     if (mIsMoving == false)
         return;
@@ -119,23 +117,31 @@ void MapToolRotate::canvasMoveEvent(QgsMapMouseEvent* e)
         // 计算新的位置
         QgsPointXY newPointMapCoords = toMapCoordinates(e->pos());
 
-        // 计算从中心点到第一个点的方位角
-        double angle1 = mRotateCenter.azimuth(mLastPointMapCoords);
+        // 计算从中心点到第一个点的距离
+        double distance1 = mZoomCenter.distance(mLastPointMapCoords);
 
-        // 计算从中心点到第二个点的方位角
-        double angle2 = mRotateCenter.azimuth(newPointMapCoords);
+        // 计算从中心点到第二个点的距离
+        double distance2 = mZoomCenter.distance(newPointMapCoords);
 
-        // 计算两个方位角的差
-        double rotationAngle = angle2 - angle1;
+        // 计算两个距离的比例
+        double scaleFactor = distance2 / distance1;
 
-        //更新RubberBand
         QMap<QgsFeatureId, QgsRubberBand*>::iterator iter;
+        
         for (iter = mMapIdToRubber.begin(); iter != mMapIdToRubber.end(); iter++)
         {
-			QgsGeometry geom = iter.value()->asGeometry();
-			geom.rotate(rotationAngle, mRotateCenter);
-			iter.value()->setToGeometry(geom);
-		}
+            QgsGeometry geom = iter.value()->asGeometry();
+
+            // 创建一个仿射变换对象，用于缩放几何体
+            QTransform ct;
+            ct.translate(mZoomCenter.x(), mZoomCenter.y());
+            ct.scale(scaleFactor, scaleFactor);
+            ct.translate(-mZoomCenter.x(), -mZoomCenter.y());
+
+            geom.transform(ct);
+
+            iter.value()->setToGeometry(geom);
+        }
 
         // 刷新地图
         mCanvas->refresh();
@@ -145,21 +151,4 @@ void MapToolRotate::canvasMoveEvent(QgsMapMouseEvent* e)
     }
 }
 
-QgsPointXY calculateCenterofFeatures(const QgsFeatureIds& featureIds, const QgsVectorLayer* layer)
-{
-    double centerX = 0.0, centerY = 0.0;
-    //迭代器
-    QgsFeatureIds::const_iterator iter;
-    for (iter = featureIds.constBegin(); iter != featureIds.constEnd(); iter++)
-    {
-		const QgsFeature feature = layer->getFeature(*iter);
-		const QgsGeometry geom = feature.geometry();
-		const QgsPointXY centroid = geom.centroid().asPoint();
-		centerX += centroid.x();
-		centerY += centroid.y();
-	}
-    centerX /= featureIds.size();
-    centerY /= featureIds.size();
 
-    return QgsPointXY(centerX, centerY);
-}
