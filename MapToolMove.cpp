@@ -18,7 +18,7 @@ void MapToolMove::canvasPressEvent(QgsMapMouseEvent *e)
 
     if (e->button() == Qt::LeftButton)
     {
-        mLayer = dynamic_cast<QgsVectorLayer *>(canvas()->currentLayer());
+        mLayer = qobject_cast<QgsVectorLayer *>(canvas()->currentLayer());
 
 
 

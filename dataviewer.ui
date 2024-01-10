@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1020</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -73,7 +73,7 @@
      <string>图元</string>
     </property>
     <addaction name="actionPolyline"/>
-    <addaction name="actionSelectGeometry"/>
+    <addaction name="actionSelectFetures"/>
    </widget>
    <widget class="QMenu" name="menuStyle">
     <property name="title">
@@ -200,7 +200,7 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="actionSelectGeometry"/>
+   <addaction name="actionSelectFetures"/>
    <addaction name="actionSwitchEdictable"/>
    <addaction name="actionAddGeometry"/>
    <addaction name="actionDeleteFeatures"/>
@@ -531,7 +531,7 @@
     <string>添加几何要素</string>
    </property>
   </action>
-  <action name="actionSelectGeometry">
+  <action name="actionSelectFetures">
    <property name="checkable">
     <bool>true</bool>
    </property>

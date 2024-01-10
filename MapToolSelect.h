@@ -27,8 +27,7 @@ public:
 	~MapToolSelect(void);
 
 public:
-	// 设置当前被选择(活动)的图层
-	void SetSelectLayer(QgsVectorLayer *);
+
 	// 重载鼠标释放事件函数
 	void canvasReleaseEvent(QgsMapMouseEvent *e) override;
 
@@ -39,7 +38,7 @@ public:
 	void SetEnable(bool);
 
 private:
-	QgsVectorLayer *pLayer;		// 当前被选择(活动)的图层
+	QgsVectorLayer *mvecLayer;		// 当前被选择(活动)的图层
 	QgsRubberBand *mRubberBand; // 框选范围
 	QgsPointXY mpressPoint;		// 鼠标点击位置
 	bool isClicked = false;		// 是否已经点击过，用于判断是否是单击

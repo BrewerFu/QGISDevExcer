@@ -112,7 +112,7 @@ public slots:
 	
 	void on_actionSwitchEdictable_triggered();
 	// 选择要素
-	void on_actionSelectGeometry_triggered();
+	void on_actionSelectFetures_triggered();
 
 	// 删除选择要素
 	void on_actionDeleteFeatures_triggered();

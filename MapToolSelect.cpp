@@ -6,7 +6,7 @@
 // 构造和析构函数
 MapToolSelect::MapToolSelect(QgsMapCanvas *Mapcanvas) : QgsMapToolSelect(Mapcanvas)
 {
-	pLayer = NULL;
+	mvecLayer = NULL;
 	mRubberBand = new QgsRubberBand(Mapcanvas, QgsWkbTypes::PolygonGeometry);
 
 	mCursor = Qt::ArrowCursor;
@@ -17,14 +17,18 @@ MapToolSelect::MapToolSelect(QgsMapCanvas *Mapcanvas) : QgsMapToolSelect(Mapcanv
 MapToolSelect::~MapToolSelect(void)
 {
 }
-// 设置当前被选择(活动)的图层
-void MapToolSelect::SetSelectLayer(QgsVectorLayer *Layer)
-{
-	pLayer = Layer;
-}
+
 
 void MapToolSelect::canvasPressEvent(QgsMapMouseEvent *e)
 {
+	mvecLayer = qobject_cast<QgsVectorLayer*>(mCanvas->currentLayer());
+
+	if (!mvecLayer)
+	{
+		// 如果没有图层被选中，或者选中的不是矢量图层，显示错误信息
+		QMessageBox::warning(nullptr, QObject::tr("Layer Error"), QObject::tr("No vector layer selected."));
+		return;
+	}
 
 	// 得到产生事件的按钮信息
 	Qt::MouseButton mButton = e->button();
@@ -76,7 +80,7 @@ void MapToolSelect::canvasReleaseEvent(QgsMapMouseEvent *e)
 	{
 		return;
 	}
-	if (pLayer == NULL)
+	if (mvecLayer == NULL)
 	{
 		QMessageBox::about(mCanvas, QString::fromLocal8Bit("警告"), QString::fromLocal8Bit("请选择图层"));
 		return;
@@ -116,7 +120,7 @@ void MapToolSelect::ExpandSingleClicked()
 {
 	int boxSize = 0;
 	// 如果图层不是面图元类型
-	if (pLayer->geometryType() != QgsWkbTypes::PolygonGeometry)
+	if (mvecLayer->geometryType() != QgsWkbTypes::PolygonGeometry)
 	{
 		boxSize = 5;
 	}
@@ -156,10 +160,10 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, Qt::KeyboardM
 
 	try
 	{
-		if (pLayer)
+		if (mvecLayer)
 		{
 			// 将地图绘板坐标系变换到图层坐标系
-			QgsCoordinateTransform ct(mCanvas->mapSettings().destinationCrs(), pLayer->crs(), QgsProject::instance());
+			QgsCoordinateTransform ct(mCanvas->mapSettings().destinationCrs(), mvecLayer->crs(), QgsProject::instance());
 			// 设定几何体的坐标系和图层坐标系一致
 			selectGeomTrans.transform(ct);
 		}
@@ -184,7 +188,7 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, Qt::KeyboardM
 	// 新选择的要素
 	QgsFeatureIds newSelectedFeatures;
 	// 获取特征迭代器
-	QgsFeatureIterator it = pLayer->getFeatures();
+	QgsFeatureIterator it = mvecLayer->getFeatures();
 	QgsFeature f;
 
 	// 得到当前选择的特征
@@ -204,7 +208,7 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, Qt::KeyboardM
 	/*处理键盘事件*/
 
 	// 得到所有已经选择了的要素的ids
-	QgsFeatureIds selectedFeatures = pLayer->selectedFeatureIds();
+	QgsFeatureIds selectedFeatures = mvecLayer->selectedFeatureIds();
 	
 	// 如果按下shift键,可以加选要素
 	if (modifiers==Qt::ShiftModifier)
@@ -238,7 +242,7 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, Qt::KeyboardM
 	}
 
 	// 设定选择的特征
-	pLayer->selectByIds(layerSelectedFeatures);
+	mvecLayer->selectByIds(layerSelectedFeatures);
 	QApplication::restoreOverrideCursor();
 }
 
@@ -250,9 +254,11 @@ void MapToolSelect::SetEnable(bool flag)
 	if (StatusFlag)
 	{
 		mCursor = Qt::CrossCursor;
+		QApplication::setOverrideCursor(mCursor);
 	}
 	else
 	{
 		mCursor = Qt::ArrowCursor;
+		QApplication::restoreOverrideCursor();
 	}
 }

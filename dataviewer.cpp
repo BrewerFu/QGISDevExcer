@@ -466,23 +466,18 @@ void DataViewer::on_actionSelfStyleMng_triggered()
 	Smart3dMap::S3d_StyleManagerLib::getSingletonPtr()->excuteSysStyleManager();
 }
 
-void DataViewer::on_actionSelectGeometry_triggered()
+void DataViewer::on_actionSelectFetures_triggered()
 {
-	if (m_mapCanvas->mapTool() != nullptr && m_mapCanvas->mapTool() == m_pSelectTool)
+	if (m_mapCanvas->mapTool() == m_pSelectTool)
 	{
 		m_mapCanvas->unsetMapTool(m_mapCanvas->mapTool());
+		m_pSelectTool->SetEnable(false);
 	}
-
-	 QgsVectorLayer *pSelectLayer = nullptr;
-	 if (m_mapCanvas->layerCount() > 0)
+	else
 	{
-		pSelectLayer = (QgsVectorLayer*)m_mapCanvas->layer(0);
-		m_pSelectTool->SetSelectLayer(pSelectLayer);
-	 }
-	 m_pSelectTool->SetEnable(true);
-
-	m_layerTreeView->setCurrentLayer(m_mapCanvas->currentLayer());
-	m_mapCanvas->setMapTool(m_pSelectTool);
+		m_mapCanvas->setMapTool(m_pSelectTool);
+		m_pSelectTool->SetEnable(true);
+	}
 }
 
 void DataViewer::removeLayer()
