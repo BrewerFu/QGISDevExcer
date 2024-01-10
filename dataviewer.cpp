@@ -724,6 +724,61 @@ void DataViewer::on_actionDeleteFeatures_triggered()
 	}
 }
 
+void DataViewer::on_actionMergeSelectedFeatures_triggered()
+{
+	QgsMapLayer* layer = m_mapCanvas->currentLayer();
+	if (layer == nullptr)
+		return;
+
+	// 如果选中的为矢量图层
+	if (layer->isValid() && layer->type() == QgsMapLayerType::VectorLayer)
+	{
+		// 转换为矢量图层
+		QgsVectorLayer* vecLayer = qobject_cast<QgsVectorLayer*>(layer);
+
+		if (!vecLayer->isEditable())
+			return;
+
+		// 获取选中要素IDs
+		QgsFeatureIds selectedFeatureIds = vecLayer->selectedFeatureIds();
+
+		//如果选中的要素矢量小于两个则无法合并
+		if (selectedFeatureIds.size() < 2)
+		{
+			QMessageBox::warning(nullptr, QStringLiteral("Feature Error"), QStringLiteral("At least two features should be selected."), QMessageBox::Ok);
+			return;
+		}
+
+		// 获取选中要素的迭代器
+		QgsFeatureIds::iterator iter = selectedFeatureIds.begin();
+
+		// 将 combinedGeom 初始化为第一个要素的几何体
+		QgsFeature firstFeature = vecLayer->getFeature(*iter);
+		QgsGeometry combinedGeom = firstFeature.geometry();
+
+		// 从第二个要素开始循环
+		for (++iter; iter != selectedFeatureIds.end(); ++iter)
+		{
+			QgsFeature feature = vecLayer->getFeature(*iter);
+			QgsGeometry geom = feature.geometry();
+			combinedGeom = combinedGeom.combine(geom);
+		}
+
+		//覆盖第一个要素
+		firstFeature.setGeometry(combinedGeom);
+		bool success = vecLayer->updateFeature(firstFeature);
+
+
+		// 删除除了第一个以外的其他要素
+		for (QgsFeatureIds::iterator iter = std::next(selectedFeatureIds.begin()); iter != selectedFeatureIds.end(); iter++)
+		{
+			vecLayer->deleteFeature(*iter);
+		}
+
+		m_mapCanvas->refresh(); // 刷新显示
+	}
+}
+
 void DataViewer::on_actionMoveFeatures_triggered()
 {
 	if (m_mapCanvas->mapTool() != m_pMoveTool)
@@ -759,3 +814,4 @@ void DataViewer::on_actionRotateFeatures_triggered()
 		m_mapCanvas->unsetMapTool(m_pRotateTool);
 	}
 }
+

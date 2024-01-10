@@ -52,6 +52,5 @@ private:
 	void ExpandSingleClicked();
 
 	// Ñ¡ÔñÍ¼²ãÌØÕ÷
-	void SetSelectFeatures(QgsGeometry &, bool, bool, bool);
-	void SetSelectFeatures(QgsGeometry &, bool);
+	void  SetSelectFeatures(QgsGeometry& selectGeometry,Qt::KeyboardModifiers modifiers);
 };

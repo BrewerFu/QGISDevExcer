@@ -124,6 +124,11 @@ public slots:
 	//旋转要素
 	void on_actionRotateFeatures_triggered();
 
+	//合并要素
+	void on_actionMergeSelectedFeatures_triggered();
+
+	void 
+
 	//-------------------------------------------------------------------------
 	// 移除图层
 	void removeLayer();
