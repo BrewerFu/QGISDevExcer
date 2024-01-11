@@ -9,13 +9,30 @@ MapToolSelect::MapToolSelect(QgsMapCanvas *Mapcanvas) : QgsMapToolSelect(Mapcanv
 	mvecLayer = NULL;
 	mRubberBand = new QgsRubberBand(Mapcanvas, QgsWkbTypes::PolygonGeometry);
 
-	mCursor = Qt::ArrowCursor;
+	// 在设置鼠标光标样式
+	setCursor(Qt::CrossCursor);
+
 	mCanvas = Mapcanvas;
 	StatusFlag = true;
 }
 
 MapToolSelect::~MapToolSelect(void)
 {
+	setCursor(Qt::ArrowCursor);
+}
+
+void MapToolSelect::activate()
+{
+	// 当工具被激活时，改变鼠标光标样式
+	setCursor(Qt::CrossCursor);
+	QgsMapTool::activate();
+}
+
+void MapToolSelect::deactivate()
+{
+	// 当工具被取消激活时，恢复默认的鼠标光标样式
+	setCursor(Qt::ArrowCursor);
+	QgsMapTool::deactivate();
 }
 
 
@@ -247,18 +264,18 @@ void MapToolSelect::SetSelectFeatures(QgsGeometry &selectGeometry, Qt::KeyboardM
 }
 
 
-// 设定工具状态
-void MapToolSelect::SetEnable(bool flag)
-{
-	StatusFlag = flag;
-	if (StatusFlag)
-	{
-		mCursor = Qt::CrossCursor;
-		QApplication::setOverrideCursor(mCursor);
-	}
-	else
-	{
-		mCursor = Qt::ArrowCursor;
-		QApplication::restoreOverrideCursor();
-	}
-}
+//// 设定工具状态
+//void MapToolSelect::SetEnable(bool flag)
+//{
+//	StatusFlag = flag;
+//	if (StatusFlag)
+//	{
+//		mCursor = Qt::CrossCursor;
+//		QApplication::setOverrideCursor(mCursor);
+//	}
+//	else
+//	{
+//		mCursor = Qt::ArrowCursor;
+//		QApplication::restoreOverrideCursor();
+//	}
+//}

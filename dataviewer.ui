@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1020</width>
-     <height>23</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -191,6 +191,9 @@
    <widget class="QWidget" name="dockWidgetContents_2"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string>toolBar_2</string>
    </property>
@@ -518,7 +521,7 @@
   </action>
   <action name="actionAddGeometry">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="dataviewer.qrc">
@@ -533,7 +536,7 @@
   </action>
   <action name="actionSelectFetures">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="dataviewer.qrc">

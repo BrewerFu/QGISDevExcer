@@ -471,12 +471,10 @@ void DataViewer::on_actionSelectFetures_triggered()
 	if (m_mapCanvas->mapTool() == m_pSelectTool)
 	{
 		m_mapCanvas->unsetMapTool(m_mapCanvas->mapTool());
-		m_pSelectTool->SetEnable(false);
 	}
 	else
 	{
 		m_mapCanvas->setMapTool(m_pSelectTool);
-		m_pSelectTool->SetEnable(true);
 	}
 }
 
@@ -604,6 +602,7 @@ void DataViewer::initMapOverviewCanvas()
 	m_layerTreeCanvasBridge->setOverviewCanvas(m_overviewCanvas);
 	m_overviewCanvas->setLayers(m_mapCanvas->layers());
 }
+
 
 void DataViewer::on_actionSwitchEdictable_triggered()
 {

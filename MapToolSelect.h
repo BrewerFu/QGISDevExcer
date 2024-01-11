@@ -34,8 +34,13 @@ public:
 	void canvasMoveEvent(QgsMapMouseEvent *e) override;
 
 	void canvasPressEvent(QgsMapMouseEvent *e) override;
-	// 设定工具状态
-	void SetEnable(bool);
+
+	//重写激活和取消激活函数
+	void activate() override;
+
+
+	void deactivate() override;
+
 
 private:
 	QgsVectorLayer *mvecLayer;		// 当前被选择(活动)的图层
